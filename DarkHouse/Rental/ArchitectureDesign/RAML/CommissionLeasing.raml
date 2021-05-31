@@ -5,6 +5,45 @@ version: 1.0
 
 /commission-leasing-requests:
   post:
+    description: 委托房屋出租
+    headers:
+      userId: 
+        type: string
+        description: 用户ID
+        required: true
+    body:
+      application/json:
+        type: |
+          {
+            "type": "object",
+            "$schema": "http://json-schema.org/draft-03/schema",
+            "id": "http://jsonschema.net",
+            "required": true,
+            "properties": {
+              "songTitle": {
+                "type": "string",
+                "required": true
+              },
+              "albumId": {
+                "type": "string",
+                "required": true,
+                "minLength": 36,
+                "maxLength": 36
+              }
+            }
+          }
+        example: |
+          {
+            "houseLocation": "550e8400-e29b-41d4-a716-446655440000",
+            "images": [
+              "imageUrl":"/api/image0",
+              "imageUrl":"/api/image1",
+              "imageUrl":"/api/image2"
+            ],
+            "albumId": "183100e3-0e2b-4404-a716-66104d440550"
+          }
+    responses:
+        200:
   /{clid}:
     get:
     /proposal:
