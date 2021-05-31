@@ -1,32 +1,32 @@
 #%RAML 1.0
-title: Test Mobile Order API
+title: Commission Tenanting
 baseUri: http://localhost:8081/api
 version: 1.0
 
-uses:
-  assets: assets.lib.raml
-
-annotationTypes:
-  monitoringInterval:
-    type: integer
-
-/orders:
-  displayName: Orders
-  get:
-    is: [ assets.paging ]
-    (monitoringInterval): 30
-    description: Lists all orders of a specific user
-    queryParameters:
-      userId:
-        type: string
-        description: use to query all orders of a user
+/commission-tenanting-requests:
   post:
-  /{orderId}:
+  /{ctid}:
     get:
-      responses:
-        200:
-          body:
-            application/json:
-              type: assets.Order
-            application/xml:
-              type: !include schemas/order.xsd
+    /proposal:
+      post:
+      get:
+      /commission-tenanting-order:
+        post:
+/commission-tenanting-orders/{ctoid}:
+  get:
+  /agency-fee-payment:
+    post:
+    get:
+    /confirmation:
+      post:
+  /tenanting:
+    post:
+    get:
+    /confirmation:
+      post:
+  /views:
+    post:
+    /vid:
+      get:
+      /confirmation:
+        post:
