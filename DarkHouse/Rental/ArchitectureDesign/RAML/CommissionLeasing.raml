@@ -5,7 +5,7 @@ version: 1.0
 
 /commission-leasing-requests:
   post:
-    description: 委托房屋出租
+    description: 委托房屋出租请求
     headers:
       userId: 
         type: string
@@ -18,53 +18,449 @@ version: 1.0
             "type": "object",
             "$schema": "http://json-schema.org/draft-03/schema",
             "id": "http://jsonschema.net",
-            "required": true,
-            "properties": {
-              "songTitle": {
-                "type": "string",
-                "required": true
-              },
-              "albumId": {
-                "type": "string",
-                "required": true,
-                "minLength": 36,
-                "maxLength": 36
-              }
-            }
+            "required": true
           }
         example: |
           {
-            "houseLocation": "550e8400-e29b-41d4-a716-446655440000",
+            "houseLocation": "蓝光梦幻3栋1单元103号",
             "images": [
               "imageUrl":"/api/image0",
               "imageUrl":"/api/image1",
               "imageUrl":"/api/image2"
             ],
-            "albumId": "183100e3-0e2b-4404-a716-66104d440550"
+            "provinceCode": "001",
+            "cityCode": "1003",
+            "countryCode": "1003002"
           }
     responses:
         200:
+  get:
+    description: 查询出租房屋委托请求信息
+    headers:
+      userId: 
+        type: string
+        description: 用户ID
+        required: true
+    queryParameters: 
+      pageIndex:
+        type: int
+        required: true
+      pageSize:
+        type: int
+        required: true
+    responses:
+      200:
+        body: 
+          application/json:
+            example: |
+              {
+                "commissions":
+                [{
+                "requesterUrl": "/users/1",
+                "requestUrl": "/commission-leasing-requests/123",
+                "proposalUrl": "/commission-leasing-requests/123/proposal",
+                "requesterName": "李女士"
+                "houseLocation": "保利星宇5栋2单元101号",
+                "createdAt": "2021-01-14 19:12:43:239"
+                },
+                {
+                "requesterUrl": "/users/1",
+                "requestUrl": "/commission-leasing-requests/3452",
+                "proposalUrl": "/commission-leasing-requests/3452/proposal",
+                "requesterName": "李女士"
+                "houseLocation": "蓝光梦幻3栋1单元103号",
+                "createdAt": "2021-01-13 19:12:43:239"
+                }],
+                "total": 283472,
+                "prePageUrl": "/commission-leasing-requests?pageIndex=1&pageSize=10"
+                "nextPageUrl": "/commission-leasing-requests?pageIndex=3&pageSize=10"
+              }
   /{clid}:
     get:
+      description: 查看出租房屋委托详情
+      headers:
+        userId: 
+          type: string
+          description: 用户ID
+          required: true
+      clid:
+        type: string
+        description: 房屋出租委托请求ID
+        required: true
+      responses:
+          200:
+            body:
+              application/json:
+                type: |
+                  {
+                    "type": "object",
+                    "$schema": "http://json-schema.org/draft-03/schema",
+                    "id": "http://jsonschema.net"
+                  }
+                example: |
+                  {
+                    "id": "3452"
+                    "requesterUrl": "/users/1",
+                    "proposalUrl": "/commission-leasing-requests/3452/proposal",
+                    "requesterName": "李女士",
+                    "houseLocation": "蓝光梦幻3栋1单元103号",
+                    "images": [
+                      "imageUrl":"/api/image0",
+                      "imageUrl":"/api/image1",
+                      "imageUrl":"/api/image2"
+                    ],
+                    "provinceCode": "001",
+                    "cityCode": "1003",
+                    "countryCode": "1003002",
+                    "createdAt": "2021-01-13 19:12:43:239"
+                  }
+          404:
+            body: 
+              text/plain:
+                example: |
+                  "Not Found"
     /proposal:
       post:
+        description: 提供委托方案
+        headers:
+          userId: 
+            type: string
+            description: 用户ID
+            required: true
+        body:
+          application/json:
+            type: |
+              {
+                "type": "object",
+                "$schema": "http://json-schema.org/draft-03/schema",
+                "id": "http://jsonschema.net",
+                "required": true
+              }
+            example: |
+              {
+                "commissionPrice": 334.00
+              }
+        responses:
+            200:
       get:
+        description: 查看委托方案
+        headers:
+          userId: 
+            type: string
+            description: 用户ID
+            required: true
+        clid:
+          type: string
+          description: 房屋出租委托请求ID
+          required: true
+        responses:
+            200:
+              body:
+                application/json:
+                  type: |
+                    {
+                      "type": "object",
+                      "$schema": "http://json-schema.org/draft-03/schema",
+                      "id": "http://jsonschema.net"
+                    }
+                  example: |
+                    {
+                      "id": "6785",
+                      "commissionPrice": 334.00,
+                      "requesterUrl": "/users/1",
+                      "requestUrl": "/commission-leasing-requests/123",
+                      "signContractUrl": "/commission-leasing-requests/3452/proposal/commission-leasing-order",
+                      "createdAt": "2021-01-13 19:12:43:239"
+                    }
+            404:
+              body: 
+                text/plain:
+                  example: |
+                    "Not Found"
       /commission-leasing-order:
         post:
-/commission-leasing-orders/{cloid}:
+          description: 签订房屋委托合同
+          headers:
+            userId: 
+              type: string
+              description: 用户ID
+              required: true
+          responses:
+              200:
+/commission-leasing-orders:
   get:
-  /cancellation:
-    post:
+    description: 查询房屋委托合同
+    headers:
+      userId: 
+        type: string
+        description: 用户ID
+        required: true
+    queryParameters: 
+      pageIndex:
+        type: int
+        required: true
+      pageSize:
+        type: int
+        required: true
+    responses:
+      200:
+        body: 
+          application/json:
+            example: |
+              {
+                "orders":
+                [{
+                  "orderUrl": "/commission-leasing-orders/6785",
+                  "commissionPrice": 334.00,
+                  "cancellationUrl": "/commission-leasing-orders/6785/cancellation",
+                  "leasingUrl": "/commission-leasing-orders/6785/leasing",
+                  "agencyFeePaymentUrl": "/commission-leasing-orders/6785/agencyFeePayment",
+                  "createdAt": "2021-01-13 19:12:43:239"
+                },
+                {
+                  "orderUrl": "/commission-leasing-orders/234",
+                  "commissionPrice": 452.00,
+                  "cancellationUrl": "/commission-leasing-orders/6785/cancellation",
+                  "leasingUrl": "/commission-leasing-orders/6785/leasing",
+                  "agencyFeePaymentUrl": "/commission-leasing-orders/6785/agencyFeePayment",
+                  "createdAt": "2021-01-17 20:12:43:239"
+                }],
+                "total": 283472,
+                "prePageUrl": "/commission-leasing-orders?pageIndex=1&pageSize=10"
+                "nextPageUrl": "/commission-leasing-orders?pageIndex=3&pageSize=10"
+              }
+  /{cloid}:
     get:
-    /confirmation:
+      description: 查看房屋委托合同
+      headers:
+        userId: 
+          type: string
+          description: 用户ID
+          required: true
+      cloid:
+        type: string
+        description: 房屋委托合同ID
+        required: true
+      responses:
+          200:
+            body:
+              application/json:
+                type: |
+                  {
+                    "type": "object",
+                    "$schema": "http://json-schema.org/draft-03/schema",
+                    "id": "http://jsonschema.net"
+                  }
+                example: |
+                  {
+                    "id": "6785",
+                    "commissionPrice": 334.00,
+                    "landlordUrl": "/users/1",
+                    "houseUrl": "/houses/129",
+                    "cancellationUrl": "/commission-leasing-orders/6785/cancellation",
+                    "leasingUrl": "/commission-leasing-orders/6785/leasing",
+                    "agencyFeePaymentUrl": "/commission-leasing-orders/6785/agencyFeePayment",
+                    "createdAt": "2021-01-13 19:12:43:239"
+                  }
+          404:
+            body: 
+              text/plain:
+                example: |
+                  "Not Found"
+    /cancellation:
       post:
-  /leasing:
-    post:
-    get:
-    /confirmation:
+        description: 请求房屋出租撤销
+        headers:
+          userId: 
+            type: string
+            description: 用户ID
+            required: true
+        cloid:
+          type: string
+          description: 房屋委托合同ID
+          required: true
+        responses:
+            200:
+      get:
+        description: 查看房屋出租撤销请求
+        headers:
+          userId: 
+            type: string
+            description: 用户ID
+            required: true
+        cloid:
+          type: string
+          description: 房屋委托合同ID
+          required: true
+        responses:
+            200:
+              body:
+                application/json:
+                  type: |
+                    {
+                      "type": "object",
+                      "$schema": "http://json-schema.org/draft-03/schema",
+                      "id": "http://jsonschema.net"
+                    }
+                  example: |
+                    {
+                      "id": "292",
+                      "orderUrl": "/commission-leasing-orders/6785",
+                      "startAt": "2021-01-13 19:12:43:239",
+                      "expiredAt": "2021-01-13 19:22:43:239"
+                    }
+            404:
+              body: 
+                text/plain:
+                  example: |
+                    "Not Found"
+      /confirmation:
+        post:
+          description: 确认房屋出租撤销
+          headers:
+            userId: 
+              type: string
+              description: 用户ID
+              required: true
+          cloid:
+            type: string
+            description: 房屋委托合同ID
+            required: true
+          responses:
+              200:
+    /leasing:
       post:
-  /agency-fee-payment:
-    post:
-    get:
-    /confirmation:
+        description: 请求房屋出租
+        headers:
+          userId: 
+            type: string
+            description: 用户ID
+            required: true
+        cloid:
+          type: string
+          description: 房屋委托合同ID
+          required: true
+        responses:
+            200:
+      get:
+        description: 查看房屋出租请求
+        headers:
+          userId: 
+            type: string
+            description: 用户ID
+            required: true
+        cloid:
+          type: string
+          description: 房屋委托合同ID
+          required: true
+        responses:
+            200:
+              body:
+                application/json:
+                  type: |
+                    {
+                      "type": "object",
+                      "$schema": "http://json-schema.org/draft-03/schema",
+                      "id": "http://jsonschema.net"
+                    }
+                  example: |
+                    {
+                      "id": "292",
+                      "orderUrl": "/commission-leasing-orders/6785",
+                      "startAt": "2021-01-13 19:12:43:239",
+                      "expiredAt": "2021-01-13 19:22:43:239"
+                    }
+            404:
+              body: 
+                text/plain:
+                  example: |
+                    "Not Found"
+      /confirmation:
+        post:
+          description: 确认房屋出租
+          headers:
+            userId: 
+              type: string
+              description: 用户ID
+              required: true
+          cloid:
+            type: string
+            description: 房屋委托合同ID
+            required: true
+          responses:
+              200:
+    /agency-fee-payment:
       post:
+        description: 请求支付中介费用
+        headers:
+          userId: 
+            type: string
+            description: 用户ID
+            required: true
+        cloid:
+          type: string
+          description: 房屋委托合同ID
+          required: true
+        responses:
+            200:
+      get:
+        description: 查看支付中介费用请求
+        headers:
+          userId: 
+            type: string
+            description: 用户ID
+            required: true
+        cloid:
+          type: string
+          description: 房屋委托合同ID
+          required: true
+        responses:
+            200:
+              body:
+                application/json:
+                  type: |
+                    {
+                      "type": "object",
+                      "$schema": "http://json-schema.org/draft-03/schema",
+                      "id": "http://jsonschema.net"
+                    }
+                  example: |
+                    {
+                      "id": "292",
+                      "orderUrl": "/commission-leasing-orders/6785",
+                      "startAt": "2021-01-13 19:12:43:239",
+                      "expiredAt": "2021-01-13 19:22:43:239",
+                      "commissionPrice": 334.00
+                    }
+            404:
+              body: 
+                text/plain:
+                  example: |
+                    "Not Found"
+      /confirmation:
+        post:
+          description: 确认支付中介费用
+          headers:
+            userId: 
+              type: string
+              description: 用户ID
+              required: true
+          cloid:
+            type: string
+            description: 房屋委托合同ID
+            required: true
+          body:
+            application/json:
+              type: |
+                {
+                  "type": "object",
+                  "$schema": "http://json-schema.org/draft-03/schema",
+                  "id": "http://jsonschema.net",
+                  "required": true
+                }
+              example: |
+                {
+                  "commissionPrice": 334.00
+                }
+          responses:
+              200:
